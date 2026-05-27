@@ -1,0 +1,35 @@
+{
+  "_comment": "Synthetic HD-map polygons for the pin-service scaffold. Coordinates are (lon, lat). Centered roughly on SF Union Square.",
+  "drivable_area": {
+    "type": "Polygon",
+    "coordinates": [[
+      [-122.420, 37.770],
+      [-122.395, 37.770],
+      [-122.395, 37.790],
+      [-122.420, 37.790],
+      [-122.420, 37.770]
+    ]]
+  },
+  "no_stop_zones": [
+    {
+      "type": "Polygon",
+      "coordinates": [[
+        [-122.410, 37.778],
+        [-122.408, 37.778],
+        [-122.408, 37.780],
+        [-122.410, 37.780],
+        [-122.410, 37.778]
+      ]]
+    },
+    {
+      "type": "Polygon",
+      "coordinates": [[
+        [-122.402, 37.782],
+        [-122.400, 37.782],
+        [-122.400, 37.784],
+        [-122.402, 37.784],
+        [-122.402, 37.782]
+      ]]
+    }
+  ]
+}

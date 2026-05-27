@@ -1,0 +1,66 @@
+# Full observability stack:
+#   - pin-service        gRPC :50051, Prometheus scrape :9090
+#   - otel-collector     OTLP :4317  -> forwards traces to Jaeger
+#   - jaeger             UI   :16686 (browse traces)
+#   - prometheus         UI   :9091  (configured scrape: pin-service:9090)
+#   - grafana            UI   :3000  (default admin/admin)
+#
+# Start:   docker compose -f docker/docker-compose.yml up --build
+# Stop:    docker compose -f docker/docker-compose.yml down -v
+
+services:
+  pin-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: pin-service
+    environment:
+      - PIN_PORT=50051
+      - PIN_METRICS_PORT=9090
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_INSECURE=true
+      - PIN_LOG_LEVEL=INFO
+    ports:
+      - "50051:50051"
+      - "9090:9090"
+    depends_on:
+      - otel-collector
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.103.0
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"
+    depends_on:
+      - jaeger
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    container_name: jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"   # UI
+      - "14250:14250"   # gRPC for the OTel collector
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9091:9090"
+
+  grafana:
+    image: grafana/grafana-oss:10.4.2
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus

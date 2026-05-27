@@ -1,0 +1,104 @@
+// Pin Infrastructure Service
+//
+// Selects a high-quality pickup/drop-off (PUDO) pin for an autonomous-vehicle
+// ride-hail request. Centralizes location logic so that all riders, vehicles,
+// and ops dashboards observe a single source of truth.
+//
+// This file is the public contract of the service. Treat changes as a wire
+// protocol change: additive only on the same major version.
+
+syntax = "proto3";
+
+package pin_service.v1;
+
+option go_package = "pinservice/v1;pinservicev1";
+
+// ---------------------------------------------------------------------------
+// Service surface
+// ---------------------------------------------------------------------------
+
+service PinService {
+  // Returns the best feasible PUDO pin for the request, or a status code
+  // indicating why no pin could be selected (e.g. no feasible candidate,
+  // load shed). Latency budget: p99 < 200ms.
+  rpc SelectPin(SelectPinRequest) returns (SelectPinResponse) {}
+
+  // Lightweight liveness probe for orchestrators and load balancers.
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {}
+}
+
+// ---------------------------------------------------------------------------
+// Shared messages
+// ---------------------------------------------------------------------------
+
+message LatLng {
+  double lat = 1;
+  double lon = 2;
+}
+
+// ---------------------------------------------------------------------------
+// SelectPin
+// ---------------------------------------------------------------------------
+
+message SelectPinRequest {
+  // Idempotency key. Two requests with the same request_id should produce
+  // the same pin assignment within a small time window.
+  string request_id = 1;
+
+  LatLng rider_location = 2;
+  LatLng dropoff_location = 3;
+
+  // Opaque rider identifier for personalization and rate limiting.
+  string rider_id = 4;
+
+  // Client-supplied wall-clock time, ms since epoch.
+  int64 timestamp_ms = 5;
+
+  // Optional accessibility constraints (e.g. "wheelchair", "low_curb").
+  // Treated as hard constraints in the feasibility filter.
+  repeated string accessibility_flags = 6;
+}
+
+message SelectedPin {
+  LatLng location = 1;
+  string h3_cell = 2;          // H3 res 11 cell containing the pin
+  double score = 3;            // Final score after congestion adjustment
+  double estimated_walk_meters = 4;
+  double estimated_eta_seconds = 5;
+}
+
+message SelectPinResponse {
+  enum Status {
+    UNKNOWN = 0;
+    OK = 1;
+    NO_FEASIBLE_PIN = 2;       // No candidate satisfied hard constraints
+    LOAD_SHED = 3;             // Service intentionally rejected (overload)
+    INVALID_REQUEST = 4;
+  }
+  Status status = 1;
+
+  // Populated iff status == OK.
+  SelectedPin pin = 2;
+
+  // Distributed-trace id for correlation across logs, metrics, traces.
+  string trace_id = 3;
+
+  // Observability fields surfaced to the client for debugging dashboards.
+  int32 candidates_considered = 4;
+  int32 candidates_feasible = 5;
+  double server_latency_ms = 6;
+
+  // Human-readable reason when status != OK.
+  string reason = 7;
+}
+
+// ---------------------------------------------------------------------------
+// HealthCheck
+// ---------------------------------------------------------------------------
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  string status = 1;       // "SERVING" | "NOT_SERVING"
+  string version = 2;      // Build/git SHA, surfaced for ops triage
+}

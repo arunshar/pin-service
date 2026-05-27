@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "pin-service"
+    static_configs:
+      - targets: ["pin-service:9090"]
