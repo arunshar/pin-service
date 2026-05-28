@@ -1,0 +1,1163 @@
+\documentclass{article}
+
+% --- Page geometry to match NeurIPS format ---
+\usepackage[
+  letterpaper,
+  textheight=9in,
+  textwidth=5.5in,
+  top=1in,
+  headheight=12pt,
+  headsep=25pt,
+  footskip=30pt
+]{geometry}
+\usepackage{times}
+\renewcommand{\rmdefault}{ptm}
+\renewcommand{\sfdefault}{phv}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% --- Math and symbols ---
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+
+% --- Tables and figures ---
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% --- Code and algorithms ---
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- Hyperlinks and references ---
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{plainnat}
+
+% --- TikZ for diagrams ---
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds,calc,decorations.pathmorphing}
+
+% --- Misc ---
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\widowpenalty=10000
+\clubpenalty=10000
+\flushbottom
+\tolerance=1800
+\emergencystretch=1.5em
+\hfuzz=0.3pt
+\hbadness=10000
+\vbadness=10000
+\parfillskip=0pt plus 0.35\textwidth
+
+% --- Title formatting ---
+\makeatletter
+\providecommand*{\toclevel@algorithm}{0}
+\renewcommand{\normalsize}{%
+  \@setfontsize\normalsize\@xpt\@xipt
+  \abovedisplayskip      7\p@ \@plus 2\p@ \@minus 5\p@
+  \abovedisplayshortskip \z@  \@plus 3\p@
+  \belowdisplayskip      \abovedisplayskip
+  \belowdisplayshortskip 4\p@ \@plus 3\p@ \@minus 3\p@
+}
+\normalsize
+\renewcommand{\small}{%
+  \@setfontsize\small\@ixpt\@xpt
+  \abovedisplayskip      6\p@ \@plus 1.5\p@ \@minus 4\p@
+  \abovedisplayshortskip \z@  \@plus 2\p@
+  \belowdisplayskip      \abovedisplayskip
+  \belowdisplayshortskip 3\p@ \@plus 2\p@ \@minus 2\p@
+}
+\renewcommand{\footnotesize}{\@setfontsize\footnotesize\@ixpt\@xpt}
+\renewcommand{\scriptsize}{\@setfontsize\scriptsize\@viipt\@viiipt}
+\renewcommand{\tiny}{\@setfontsize\tiny\@vipt\@viipt}
+\renewcommand{\large}{\@setfontsize\large\@xiipt{14}}
+\renewcommand{\Large}{\@setfontsize\Large\@xivpt{16}}
+\renewcommand{\LARGE}{\@setfontsize\LARGE\@xviipt{20}}
+\renewcommand{\huge}{\@setfontsize\huge\@xxpt{23}}
+\renewcommand{\Huge}{\@setfontsize\Huge\@xxvpt{28}}
+
+\renewcommand{\section}{%
+  \@startsection{section}{1}{\z@}%
+                {-2.0ex \@plus -0.5ex \@minus -0.2ex}%
+                {0.8ex \@plus 0.2ex \@minus 0.1ex}%
+                {\large\bfseries\raggedright}%
+}
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}{\z@}%
+                {-1.8ex \@plus -0.5ex \@minus -0.2ex}%
+                {0.5ex \@plus 0.15ex \@minus 0.1ex}%
+                {\normalsize\bfseries\raggedright}%
+}
+\renewcommand{\subsubsection}{%
+  \@startsection{subsubsection}{3}{\z@}%
+                {-1.5ex \@plus -0.5ex \@minus -0.2ex}%
+                {0.35ex \@plus 0.1ex \@minus 0.05ex}%
+                {\normalsize\bfseries\raggedright}%
+}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.4}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.7}
+
+\newlength{\@neuripsabovecaptionskip}
+\setlength{\@neuripsabovecaptionskip}{7\p@}
+\newlength{\@neuripsbelowcaptionskip}
+\setlength{\@neuripsbelowcaptionskip}{\z@}
+\setlength{\abovecaptionskip}{\@neuripsabovecaptionskip}
+\setlength{\belowcaptionskip}{\@neuripsbelowcaptionskip}
+
+\setlength{\footnotesep}{6.65\p@}
+\setlength{\skip\footins}{9\p@ \@plus 4\p@ \@minus 2\p@}
+\renewcommand{\footnoterule}{\kern-3\p@ \hrule width 12pc \kern 2.6\p@}
+\setcounter{footnote}{0}
+
+\setlength{\parindent}{\z@}
+\setlength{\parskip}{0pt}
+\setlist{topsep=0pt, itemsep=0pt, parsep=0pt, partopsep=0pt}
+\setlength{\bibsep}{0pt}
+
+\let\oldthebibliography\thebibliography
+\let\oldendthebibliography\endthebibliography
+\renewenvironment{thebibliography}[1]{%
+  \oldthebibliography{#1}%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \setlength{\topsep}{0pt}%
+  \setlength{\partopsep}{0pt}%
+}{%
+  \oldendthebibliography
+}
+
+\newcommand{\@noticestring}{%
+  40th Annual Conference on Neural Information Processing Systems (NeurIPS 2026).%
+}
+
+\renewcommand{\maketitle}{%
+  \par
+  \begingroup
+    \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+    \renewcommand{\@makefnmark}{\hbox to \z@{$^{\@thefnmark}$\hss}}
+    \long\def\@makefntext##1{%
+      \parindent 1em\noindent
+      \hbox to 1.8em{\hss $\m@th ^{\@thefnmark}$}##1
+    }
+    \thispagestyle{empty}
+    \@maketitle
+    \@thanks
+    \@notice
+  \endgroup
+  \let\maketitle\relax
+  \let\thanks\relax
+}
+
+\newcommand{\@toptitlebar}{%
+  \hrule height 4\p@
+  \vskip 0.25in
+  \vskip -\parskip%
+}
+\newcommand{\@bottomtitlebar}{%
+  \vskip 0.29in
+  \vskip -\parskip
+  \hrule height 1\p@
+  \vskip 0.09in%
+}
+
+\renewcommand{\@maketitle}{%
+  \vbox{%
+    \hsize\textwidth
+    \linewidth\hsize
+    \vskip 0.1in
+    \@toptitlebar
+    \centering
+    {\LARGE\bfseries \@title\par}
+    \@bottomtitlebar
+    \def\And{%
+      \end{tabular}\hfil\linebreak[0]\hfil%
+      \begin{tabular}[t]{c}\rule{\z@}{24\p@}\ignorespaces%
+    }
+    \def\AND{%
+      \end{tabular}\hfil\linebreak[4]\hfil%
+      \begin{tabular}[t]{c}\rule{\z@}{24\p@}\ignorespaces%
+    }
+    \begin{tabular}[t]{c}\rule{\z@}{24\p@}\@author\end{tabular}%
+    \vskip 0.3in \@minus 0.1in
+  }%
+}
+
+\newcommand{\ftype@noticebox}{8}
+\newcommand{\@notice}{%
+  \enlargethispage{2\baselineskip}%
+  \@float{noticebox}[b]%
+    \footnotesize\@noticestring%
+  \end@float%
+}
+
+\renewenvironment{abstract}%
+{%
+  \vskip 0.075in%
+  \centerline{\large\bfseries Abstract}%
+  \vspace{0.5ex}%
+  \begin{quote}%
+}
+{%
+  \par%
+  \end{quote}%
+  \vskip 1ex%
+}
+\makeatother
+
+% --- Listings style ---
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  breaklines=true,
+  frame=single,
+  xleftmargin=1em,
+  framexleftmargin=0.5em
+}
+
+% --- Project diagram styles ---
+\tikzset{
+  paperblock/.style={draw,rounded corners=2pt,thick,align=center,inner sep=3.5pt,font=\scriptsize,minimum height=0.62cm},
+  paperarrow/.style={-{Stealth[length=2.2mm,width=1.6mm]},line width=0.66pt,shorten >=3pt,shorten <=3pt,line cap=round},
+  paperdata/.style={paperblock,fill=cyan!8,draw=cyan!55!black},
+  papermodel/.style={paperblock,fill=green!8,draw=green!45!black},
+  paperloss/.style={paperblock,fill=orange!10,draw=orange!70!black},
+  paperout/.style={paperblock,fill=violet!8,draw=violet!55!black}
+}
+
+% ============================================================
+\title{Pin Infrastructure Service: A Constraint-First Microservice for Autonomous Ride-Hail Pickup and Drop-Off Selection}
+\author{
+  \textbf{Arun Sharma}\\
+  University of Minnesota, Twin Cities\\
+  \texttt{arunshar@umn.edu}
+}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Autonomous ride-hail systems cannot assign pickup and drop-off locations by choosing the nearest latitude-longitude point to the rider. A usable pin must be legally stoppable, reachable by the vehicle, walkable for the rider, and robust under crowd pressure. The Pin Infrastructure Service is a reference implementation of this serving path: H3 candidate generation, HD-map hard-constraint filtering, machine-learning scoring, congestion-aware reranking, load shedding, gRPC serving, Prometheus metrics, and OpenTelemetry tracing. This paper documents the repository as an arXiv-style systems paper. It emphasizes the core invariant that machine learning ranks only feasible candidates and never overrides hard constraints. The implementation evidence is software-grounded: unit tests cover candidate generation, constraint filtering, scorer behavior, and congestion control; load testing and production latency are handled by the serving benchmark protocol.
+\end{abstract}
+
+\section{Introduction}
+
+Pickup and drop-off (PUDO) selection is a small interface with large system consequences. In a human-driven service, a driver may improvise around an awkward pin. In an autonomous fleet, the selected point must be compatible with maps, driving policy, rider walking distance, curb legality, congestion, and service-level objectives. A naive nearest-point rule creates unsafe stops, rider confusion, and hotspots near stadiums, airports, schools, and transit hubs.
+
+The Pin Infrastructure Service is a minimal but realistic microservice for this problem. It exposes a gRPC \texttt{SelectPin} endpoint. The handler generates candidate curb cells around the rider, filters candidates through HD-map constraints, scores feasible candidates with an offline-trained gradient-boosted model, penalizes congested cells, records the assignment, and returns a traceable response. The service also exports Prometheus metrics and OpenTelemetry spans.
+
+This paper turns the project into a paper artifact. It avoids claiming fleet-scale performance. Instead it specifies the system contract and identifies the validation needed for a full systems paper.
+
+\paragraph{Contributions:}
+\begin{enumerate}
+  \item A constraint-first PUDO serving architecture where ML scoring is downstream of hard feasibility checks.
+  \item A deterministic H3 candidate generation path that is stable under repeated requests and load tests.
+  \item A congestion-aware reranking layer with sliding-window assignment counts and load shedding.
+  \item A reproducible microservice implementation with gRPC, observability, Docker compose, load-test hooks, and unit tests.
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+
+
+
+
+\begin{tikzpicture}[x=0.755cm,y=0.95cm,font=\scriptsize,every node/.style={align=center}]
+  \node[font=\bfseries] at (1.15,4.18) {A. Inputs};
+  \node[paperdata,minimum width=1.88cm] (in1) at (1.05,3.22) {ride request};
+  \node[paperdata,minimum width=1.88cm] (in2) at (1.05,2.10) {HD-map candidates};
+  \node[paperdata,minimum width=1.88cm] (in3) at (1.05,0.98) {fleet state};
+  \node[papermodel,minimum width=2.18cm] (embed) at (3.85,2.10) {candidate tokenizer};
+  \draw[paperarrow] (in1.east) -- ([yshift=0.20cm]embed.west);
+  \draw[paperarrow] (in2.east) -- (embed.west);
+  \draw[paperarrow] (in3.east) -- ([yshift=-0.20cm]embed.west);
+
+  \node[font=\bfseries] at (6.30,4.18) {B. Attention encoder};
+  \node[papermodel,minimum width=2.18cm] (ln) at (6.25,3.34) {LayerNorm};
+  \node[papermodel,minimum width=2.18cm] (qkv) at (6.25,2.47) {constraint $Q,K,V$};
+  \node[papermodel,minimum width=2.18cm] (attn) at (6.25,1.60) {feasibility attention};
+  \node[papermodel,minimum width=2.18cm] (ffn) at (6.25,0.73) {ranking MLP + residual};
+  \draw[paperarrow] (embed.east) -- (ln.west);
+  \draw[paperarrow] (ln.south) -- (qkv.north);
+  \draw[paperarrow] (qkv.south) -- (attn.north);
+  \draw[paperarrow] (attn.south) -- (ffn.north);
+  \node[font=\tiny] at (7.40,0.34) {residual add/norm};
+
+  \node[inner sep=0pt,minimum width=0.84cm,minimum height=0.84cm] (mat) at (8.45,1.78) {};
+  \begin{scope}[shift={(8.05,1.38)}]
+    \foreach \i in {0,...,4}{\foreach \j in {0,...,4}{
+      \pgfmathsetmacro{\v}{18+10*\i+8*\j}
+      \fill[blue!\v!white,draw=blue!20!white,line width=0.05pt] (0.16*\i,0.16*\j) rectangle ++(0.14,0.14);
+    }}
+    \node[font=\tiny] at (0.40,1.02) {$QK^\top/\sqrt d$};
+  \end{scope}
+  \draw[paperarrow] (attn.east) -- (mat.west);
+  \coordinate (bus) at (9.55,1.78);
+  \draw[paperarrow] (mat.east) -- (bus);
+
+  \node[font=\bfseries] at (12.45,4.18) {C. Decoder heads};
+  \node[paperloss,minimum width=2.42cm] (h1) at (11.30,2.95) {hard constraints $g(c)$};
+  \node[paperloss,minimum width=2.42cm] (h2) at (11.30,1.20) {utility $u_\theta(c)$};
+  \node[paperout,minimum width=2.55cm] (fuse) at (14.20,2.08) {ranked feasible pins};
+  \node[paperout,minimum width=2.12cm] (out) at (16.65,2.08) {selected PUDO};
+  \draw[semithick,gray!70] (9.55,0.90) -- (9.55,3.25);
+  \draw[paperarrow] (9.55,2.95) -- (h1.west);
+  \draw[paperarrow] (9.55,1.20) -- (h2.west);
+  \draw[paperarrow] (h1.east) -- ([yshift=0.28cm]fuse.west);
+  \draw[paperarrow] (h2.east) -- ([yshift=-0.28cm]fuse.west);
+  \draw[paperarrow] (fuse.east) -- (out.west);
+
+  \node[font=\bfseries] at (12.65,0.30) {D. Evaluation heads};
+  \foreach \x/\lab in {9.85/violation rate,11.35/walk dist.,12.82/p95/p99,14.28/shed rate}{
+    \node[paperout,minimum width=1.25cm,minimum height=0.36cm,font=\tiny] at (\x,-0.30) {\lab};
+  }
+  \draw[paperarrow] (out.south) -- ++(0,-0.72) -| (14.28,-0.05);
+
+  \begin{scope}[shift={(1.05,-1.88)}]
+    \draw[fill=gray!10,draw=gray!45,line width=0.3pt] (0,0.12) -- (1.2,0.30) -- (2.4,0.08) -- (3.65,0.38) -- (4.95,0.14);
+    \foreach \x/\y in {0.30/0.25,1.00/0.33,1.75/0.18,2.45/0.16,3.25/0.42,4.10/0.28}{\fill[green!50!black] (\x,\y) circle (1.1pt);}
+    \draw[paperarrow,cyan!65!black] (2.45,1.00) -- (1.20,0.42);
+    \draw[paperarrow,cyan!65!black] (2.45,1.00) -- (3.35,0.52);
+    \node[font=\tiny] at (2.45,1.18) {curb candidates before ranking};
+  \end{scope}
+\end{tikzpicture}
+\caption{Detailed Pin-Service architecture. The figure makes the system invariant explicit: hard map constraints produce the feasible set before the scorer runs. The serving decoder exposes fallback, load shedding, and trace outputs, while the evaluation heads target violation rate, rider burden, tail latency, and degradation behavior.}
+\label{fig:pin-architecture}
+\end{figure}
+
+\paragraph{Scope:}
+
+Pickup and drop-off selection looks like a small ranking problem until it is placed inside an autonomous fleet. A human driver can negotiate an awkward location, infer a better curb, or call the rider. An autonomous service needs the pin selection system to encode safety, legality, rider access, vehicle reachability, and operational load before the vehicle arrives. That turns a point-selection feature into infrastructure.
+
+The main research claim of this project is not that gradient boosting is novel, nor that H3 is novel, nor that gRPC is novel. The claim is architectural: feasibility must precede preference. A machine-learning model can be useful for ranking candidate pins, but it should not be able to override hard constraints. This is a practical systems principle that applies beyond ride hail: in safety-adjacent spatial services, learned scoring belongs downstream of map policy and upstream of observability.
+
+The paper also frames PUDO as an online coupled decision problem. During normal traffic, requests can be handled independently. During venue surges, school pickup, or airport congestion, one assignment changes the quality of nearby future assignments. The congestion penalty in the current repository is a small approximation to this coupling. It is intentionally simple, but it creates a path from a stateless nearest-point baseline to an operationally aware service.
+
+The expanded paper therefore reads as a systems paper. It includes the constrained ranking formulation, spatial indexing background, observability requirements, load testing plan, failure injection protocol, implementation-grounded results, and reader questions. These are the ingredients needed for a credible infrastructure paper.
+
+\paragraph{Expanded contributions:}
+Beyond the code artifact, the paper contributes a feasibility-first decision model, a staged evaluation protocol, a map-policy extension plan, and an explicit distinction between hard constraints, soft preferences, and telemetry. This distinction is the conceptual core of the project.
+
+\section{Related Work}
+
+\paragraph{Expanded Citation Map:}
+The expanded references position Pin-Service between map matching, spatial indexing, mobility-on-demand, learning-to-rank, and production observability. HMM map matching, travel-time constrained matching, map-matching surveys, R-trees, R*-trees, H3, OSMnx, and OpenStreetMap anchor the geospatial substrate \citep{newson2009hidden,krumm2004travel,brakatsoulas2005mapmatching,guttman1984rtree,beckmann1990rstar,h3,boeing2017osmnx,haklay2008osm}. Dijkstra, A*, pickup-and-delivery, vehicle routing, dynamic ride-sharing, shareability networks, and robotic mobility-on-demand define the operational decision problem \citep{dijkstra1959,hart1968astar,dantzig1959truck,savelsbergh1995vehicle,laporte2009fifty,alonso2017ridesharing,santi2014quantifying,pavone2012robotic,spieser2014toward,zhang2016tshare}. Gradient boosting, XGBoost, LambdaMART, congestion pricing, surge-pricing analysis, PostGIS, OSRM, gRPC, OpenTelemetry, Prometheus, tail latency, and Dapper motivate the serving and observability boundary \citep{friedman2001greedy,chen2016xgboost,burges2010ranknet,vickrey1969congestion,castillo2017surge,postgis,luxen2011osrm,grpc,opentelemetry,prometheus,dean2013tail,sigelman2010dapper}.
+
+
+The PUDO problem can be framed as constrained ranking. Given rider location $r$, request context $c$, and map state $M$, we need a selected pin $p^*$:
+\begin{equation}
+  p^* = \arg\max_{p\in\mathcal{P}(r)} S(p,r,c)
+  \quad \text{s.t.}\quad C_k(p,M,c)=1\ \forall k.
+\end{equation}
+The design principle is that the constraint indicator is evaluated before the score. A high predicted satisfaction score cannot legalize an illegal stop.
+
+The service optimizes for four properties:
+\begin{itemize}
+  \item \textbf{Safety}: hard map constraints are not model suggestions.
+  \item \textbf{Determinism}: the candidate set is reproducible for a fixed request.
+  \item \textbf{Operability}: metrics, traces, and load shedding are first-class.
+  \item \textbf{Portability}: the Python implementation is a readable reference path that can later be ported to C++ or ONNX Runtime.
+\end{itemize}
+
+This design sits at the intersection of map matching, spatial indexing, spatial databases, and real-time service engineering. Hidden-Markov map matching formalizes how noisy GPS observations can be associated with road networks \citep{newson2009hidden}. R-trees and related spatial indexes make spatial search practical in databases \citep{guttman1984rtree}. H3 provides a hierarchical hexagonal grid useful for stable spatial bucketing \citep{h3}. OpenStreetMap demonstrates the value and complexity of crowd-built road network data \citep{haklay2008osm}. The Pin Infrastructure Service borrows these ideas for a narrower task: produce a feasible curbside candidate and return it through an observable serving path.
+
+
+
+\paragraph{Literature synthesis:}
+Pin-Service draws from routing, map matching, ride-hailing, spatial indexing, and online service reliability. Classical shortest-path and vehicle-routing work provides the optimization background for feasible pickup and dropoff assignment \citep{dijkstra1959,hart1968astar,dantzig1959truck,savelsbergh1995vehicle,laporte2009fifty}. Map-matching and road-network tooling define how raw geographic points become candidates on a usable mobility graph \citep{newson2009hidden,brakatsoulas2005mapmatching,boeing2017osmnx,luxen2011osrm}. Spatial databases and indexes, including R-trees, H3, and PostGIS, give the serving system a way to search nearby candidates without scanning the entire map \citep{guttman1984rtree,beckmann1990rstar,h3,postgis}.
+
+Ride-hailing and fleet-management papers add the operational objective. The system must balance walking burden, driver routing, curb legality, congestion, surge, and fallback behavior \citep{alonso2017ridesharing,castillo2017surge,santi2014quantifying,spieser2014toward,zhang2016tshare}. This makes Pin-Service different from a generic ranking model. A learned scorer is useful only after hard constraints define what is legal, reachable, and policy-compliant. The paper therefore places machine learning downstream of a deterministic feasibility layer.
+
+The systems literature further motivates the observability design. Tail latency, distributed tracing, and metric cardinality matter because dispatch decisions happen inside a real-time service path \citep{dean2013tail,sigelman2010dapper,opentelemetry,prometheus,grpc}. A method that improves mean utility but fails under overload is not a deployable PUDO system. Pin-Service consequently evaluates constraint violation, walking distance, p95/p99 latency, fallback success, and trace completeness as one coupled serving problem.
+
+\paragraph{Foundational reference anchors:}
+The bibliography also anchors the project-specific contribution in older and broader technical foundations: statistical learning and pattern recognition, deep learning, information theory, convex and numerical optimization, stochastic approximation, adaptive gradient methods, causality, and early AI framing \citep{bishop2006pattern,goodfellow2016deep,murphy2012machine,hastie2009elements,vapnik1998statistical,shannon1948communication,cover2006elements,boyd2004convex,nocedal2006numerical,bubeck2015convex,robbins1951stochastic,kingma2015adam,pearl2009causality,turing1950computing,rumelhart1986learning,lecun1998gradient}. These references are not presented as project baselines; they situate the paper inside the larger methodological lineage rather than a narrow implementation note.
+
+\section{Method and Architecture}
+
+The request path is:
+\begin{enumerate}
+  \item validate request and check global backpressure,
+  \item generate H3 candidates around the rider,
+  \item filter candidates through HD-map polygons,
+  \item score feasible candidates,
+  \item subtract congestion penalties,
+  \item record the selected cell and return response metadata.
+\end{enumerate}
+
+\paragraph{Candidate generation:}
+
+Candidate generation uses H3 cells \citep{h3}. Let $h(r)$ be the H3 cell containing the rider at resolution $\rho$. The candidate set is the sorted grid disk
+\begin{equation}
+  \mathcal{P}(r)=\{ \text{center}(h) : h\in \text{grid\_disk}(h(r),k)\}.
+\end{equation}
+The repository default is resolution 11 and $k=2$, yielding a small local neighborhood suitable for dense urban curb selection. Sorting cells makes outputs deterministic for a fixed input.
+
+\paragraph{Hard-constraint filter:}
+
+The current HD-map view is a Shapely fixture with a drivable polygon and no-stop zones. A candidate passes if it lies inside the drivable area and outside every no-stop zone:
+\begin{equation}
+  C(p)=\mathbb{1}[p\in D]\prod_z \mathbb{1}[p\notin Z_z].
+\end{equation}
+Production implementations would replace this fixture with lane-level map services, time-of-day restrictions, curb-side validity, event closures, and vehicle reachability.
+
+\paragraph{Machine-learning scoring:}
+
+The scoring model is loaded lazily from a serialized \texttt{joblib} file. The feature vector contains walking distance, hour of day, historical success for the H3 cell, and local supply. The reference implementation uses a gradient-boosted regressor, following a long line of tree ensemble methods for tabular prediction \citep{friedman2001greedy}. This model only ranks feasible candidates.
+
+\paragraph{Congestion-aware reranking:}
+
+PUDO assignment is not independent across riders. If many requests arrive near the same venue, a locally optimal curb becomes globally harmful. The service maintains a sliding-window counter per H3 cell. If the count exceeds a threshold, a fixed penalty is subtracted from the score:
+\begin{equation}
+  S'(p)=S(p)-\lambda\mathbb{1}[n_{\text{window}}(h(p))>\tau].
+\end{equation}
+A global cap triggers load shedding before expensive work begins. This makes backpressure explicit rather than allowing queueing latency to silently degrade.
+
+\paragraph{Serving and Observability:}
+
+The service is implemented as a gRPC server with thread-pool workers \citep{grpc}. Each major stage runs inside an OpenTelemetry span \citep{opentelemetry}; counters and histograms are exported through Prometheus \citep{prometheus}. The response includes the selected pin, score, estimated walking distance, ETA baseline, candidate counts, server latency, and trace identifier.
+
+This observability design is part of the method. It gives operators a way to determine whether failures came from map constraints, scoring, congestion, model loading, or overload.
+
+\section{Evaluation}
+
+\begin{table}[t]
+\centering
+\caption{Implementation validation in Pin Infrastructure Service.}
+\label{tab:validation}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.56\linewidth}p{0.14\linewidth}@{}}
+\toprule
+\textbf{Area} & \textbf{What is checked} & \textbf{Count}\\
+\midrule
+Candidate generation & deterministic H3 candidate construction and neighborhood behavior & tests\\
+Constraints & polygon inclusion and no-stop exclusion on the fixture map & tests\\
+Scoring & feature extraction and model-backed ranking behavior & tests\\
+Congestion & penalty application, assignment recording, and load-shed signal & tests\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The next empirical layer should run Locust against the gRPC endpoint and report throughput, p50/p95/p99 latency, feasible-candidate rate, score distribution, congestion penalty activation, load-shed rate, and trace completeness. A realistic paper should also compare nearest-point, score-only, constraint-first, and constraint-plus-congestion variants.
+
+\paragraph{Theory: Constraint-First Ranking:}
+
+The central theoretical choice is to separate feasibility from desirability. A pin can be desirable but infeasible: it may be close to the rider, historically successful, and uncongested, while still lying in a no-stop zone. Conversely, a feasible pin may be less desirable but safe. The service therefore optimizes a lexicographic objective:
+\begin{equation}
+  p^* = \arg\max_{p\in\mathcal{P}} \left(C(p), S(p)\right),
+\end{equation}
+where $C(p)\in\{0,1\}$ is hard feasibility and $S(p)$ is a learned or hand-built score. Lexicographic ordering means no infeasible candidate can outrank a feasible one, regardless of score. In implementation, this is simpler: filter first, then score.
+
+\paragraph{Candidate-set completeness:}
+
+The service can only choose pins in $\mathcal{P}(r)$. Candidate generation is therefore a recall problem. If the H3 disk is too small, the best curb point may be absent. If it is too large, scoring and filtering cost increase and the model may return a pin that is walkable in geometry but undesirable in practice. Candidate recall should be evaluated against a dense curb inventory:
+\begin{equation}
+  \text{candidate recall}=\frac{|\mathcal{P}(r)\cap \mathcal{P}_{\text{valid}}(r)|}{|\mathcal{P}_{\text{valid}}(r)|}.
+\end{equation}
+The repository uses H3 centers as a compact reference path. A production system would likely generate candidates from lane or curb segments and use H3 only as an index.
+
+\paragraph{Hard constraints as safety invariants:}
+
+Hard constraints should be deterministic, versioned, and testable. They may include stopping legality, vehicle reachability, rider walking access, curb side, school or emergency zones, event closures, and time-of-day restrictions. The map fixture in the repository models only drivable and no-stop polygons, but the architecture generalizes:
+\begin{equation}
+  C(p,M,c)=\prod_{k=1}^{K}C_k(p,M,c).
+\end{equation}
+The product form makes the invariant explicit: any failed constraint rejects the candidate.
+
+\paragraph{Scoring as preference, not permission:}
+
+The ML model estimates preference among feasible candidates. Features such as walking distance, historical success, local supply, and hour of day are useful, but they should not override map policy. This is the main engineering lesson of the project. It is safer to deploy a mediocre scorer behind correct constraints than a strong scorer that can legalize invalid stops.
+
+\paragraph{Congestion as a coupling term:}
+
+If requests are independent, each can be optimized locally. PUDO is not independent under crowding. Repeatedly assigning the same cell increases dwell, confusion, and curb blockage. The congestion penalty approximates a coupling term:
+\begin{equation}
+  \max_{\{p_j\}}\sum_j S(p_j,r_j,c_j)-\lambda\sum_h \max(0,n_h-\tau),
+\end{equation}
+where $n_h$ is the number of assignments to cell $h$. The repository implements a greedy online version. A full paper could compare greedy penalties against batch assignment or min-cost flow for high-volume venues.
+
+\paragraph{Additional Literature Context:}
+
+\paragraph{Map matching and road-network inference:}
+
+Map matching uses road-network constraints to explain noisy location observations. Newson and Krumm's HMM formulation remains a clear reference because it decomposes the problem into emission and transition probabilities \citep{newson2009hidden}. PUDO selection is not map matching, but it shares the principle that raw coordinates must be interpreted through a network and constraints.
+
+\paragraph{Spatial indexing:}
+
+Spatial indexes such as R-trees provide efficient window and nearest-neighbor search for geometric objects \citep{guttman1984rtree}. H3 provides a hierarchical discrete global grid with stable cell identifiers \citep{h3}. In the service, H3 gives deterministic local neighborhoods and congestion keys. R-tree-like structures would be more appropriate for querying curb polygons and no-stop zones at scale.
+
+\paragraph{Open map data:}
+
+OpenStreetMap is a major source of road-network and place data, but it is heterogeneous and community-maintained \citep{haklay2008osm}. An autonomous ride-hail system cannot blindly trust arbitrary map tags. It needs a policy layer that converts map evidence into operational constraints, with versioning and auditability. The repository fixture is intentionally small, but the paper should position it as a baseline for HD-map policy services.
+
+\paragraph{Online service observability:}
+
+gRPC, Prometheus, and OpenTelemetry are not research contributions by themselves \citep{grpc,prometheus,opentelemetry}. They matter because PUDO selection is a serving problem. A model that works offline but has unbounded latency or no traceability is not operationally meaningful. The paper should treat observability as part of the system design.
+
+\paragraph{Service-Level Objectives:}
+
+A production service should define SLOs before model evaluation:
+\begin{itemize}
+  \item p99 latency under normal traffic,
+  \item max load-shed rate under surge,
+  \item minimum feasible-candidate rate,
+  \item maximum no-stop violation rate in offline replay,
+  \item trace completeness rate,
+  \item model fallback success rate.
+\end{itemize}
+These metrics prevent a common systems failure: optimizing offline prediction quality while ignoring serving constraints. For autonomous fleets, a slow or unobservable correct answer may still be unacceptable.
+
+\paragraph{Evaluation Protocol:}
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[node distance=0.35cm and 0.35cm]
+  \node[paperdata,minimum width=1.45cm] (split) {replay\\ venue / school};
+  \node[papermodel,right=of split,minimum width=1.45cm] (base) {policies\\ nearest / score};
+  \node[papermodel,right=of base,minimum width=1.45cm] (abl) {failures\\ model / load};
+  \node[paperout,below=of base,minimum width=1.45cm] (metric) {metrics\\ violation, p99};
+  \node[paperloss,right=of metric,minimum width=1.45cm] (claim) {claims\\ service safe};
+  \draw[paperarrow] (split) -- (base);
+  \draw[paperarrow] (base) -- (abl);
+  \draw[paperarrow] (abl) -- (metric);
+  \draw[paperarrow] (metric) -- (claim);
+\end{tikzpicture}}
+\caption{Evaluation structure for Pin-Service: replay quality and serving behavior are separated so safety, rider burden, tail latency, and fallback behavior are visible.}
+\label{fig:pin-eval}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Recommended evaluation protocol for Pin Infrastructure Service.}
+\label{tab:pin_protocol}
+\begin{tabular}{@{}p{0.23\linewidth}p{0.32\linewidth}p{0.31\linewidth}@{}}
+\toprule
+\textbf{Axis} & \textbf{Metrics} & \textbf{Question}\\
+\midrule
+Candidate generation & recall against curb inventory, candidate count & does the search include good pins?\\
+Constraint filtering & violation rate, false rejection rate & are safety rules enforced correctly?\\
+Scoring & offline NDCG, success prediction error & does ML improve preference ranking?\\
+Congestion & hotspot count, assignment entropy, penalty activation & does reranking spread demand?\\
+Serving & p50/p95/p99 latency, QPS, load shed & can it operate under traffic?\\
+Observability & trace completeness, metric cardinality, error attribution & can failures be debugged?\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Offline evaluation should replay historical requests. Online-style evaluation should use synthetic demand around venues with known surge behavior. The most important ablation is not model A versus model B; it is nearest-point versus constraint-first versus constraint-first plus congestion. That ablation demonstrates the system thesis.
+
+\paragraph{Data and Simulation Plan:}
+
+A useful benchmark can be created without production ride-hail data:
+\begin{enumerate}
+  \item construct a road and curb fixture from public map data;
+  \item annotate no-stop zones, crosswalks, school zones, and driveways;
+  \item sample rider locations around venues, transit stops, and residential blocks;
+  \item define simulated success probabilities based on walking distance and curb class;
+  \item generate demand bursts to test congestion behavior;
+  \item replay requests through each policy and measure violations and latency.
+\end{enumerate}
+This would still be a simulation, but it would be more meaningful than unit tests alone and safe to publish.
+
+\section{Discussion and Limitations}
+
+\paragraph{Nearest feasible is not safest:}
+A feasible point can still be inconvenient or risky if it requires crossing a busy road. The current fixture does not model pedestrian routing. A full system should.
+
+\paragraph{Map staleness:}
+Construction, events, weather, and temporary closures can invalidate map constraints. A deployed service needs map freshness and override channels.
+
+\paragraph{Congestion state consistency:}
+The in-memory congestion dictionary is simple but not distributed. Multiple service replicas would need shared state or a consistent sharding strategy.
+
+\paragraph{Metric cardinality:}
+Spatial services can explode metric cardinality if every H3 cell becomes a label. The observability design should aggregate carefully.
+
+\paragraph{Request Trace Schema:}
+
+Each response should be traceable with:
+\begin{itemize}
+  \item request id and trace id,
+  \item rider coordinate and H3 origin cell,
+  \item candidate count before and after filtering,
+  \item rejected constraint counts by reason,
+  \item model version and score range,
+  \item congestion penalty status,
+  \item selected pin and fallback status,
+  \item latency by stage.
+\end{itemize}
+This schema turns a model prediction into an operable service artifact.
+
+\paragraph{Claim Checklist:}
+
+This paper can claim a constraint-first service implementation, deterministic candidate generation, fixture-map filtering, model-backed ranking path, congestion penalties, gRPC serving, and observability hooks. It cannot yet claim production PUDO safety, autonomous-vehicle deployment readiness, fleet-scale latency, or real-world rider satisfaction gains.
+
+\paragraph{Recommended Figures:}
+
+The final paper should include:
+\begin{enumerate}
+  \item request-path architecture diagram;
+  \item map illustration of candidate generation and filtering;
+  \item congestion reranking example under a venue surge;
+  \item latency breakdown by stage;
+  \item ablation table comparing nearest, score-only, constraint-first, and congestion-aware policies.
+\end{enumerate}
+
+\paragraph{Mathematical Notes on Feasibility:}
+
+The service can be viewed as a constrained decision system with a feasible region $\mathcal{F}(r,c,M)$. Candidate generation approximates this region with a finite set, and filtering estimates membership:
+\begin{equation}
+  \mathcal{F}=\{p\in\mathbb{R}^2:C_k(p,M,c)=1\ \forall k\}.
+\end{equation}
+The finite candidate set $\mathcal{P}$ should satisfy $\mathcal{P}\cap\mathcal{F}\neq\emptyset$ for ordinary requests. If it does not, the correct behavior is a fallback, not an unsafe prediction. A full paper should report the no-feasible-candidate rate and break it down by geography, time, and map version.
+
+\paragraph{Constraint conflict:}
+
+Constraints can conflict. A rider may be inside a pedestrian plaza; the nearest legal curb may be far; road closures may remove ordinary pickup zones. The service should expose the rejection reasons so that map operations can improve data. A black-box ``no pin found'' response is insufficient for an operational system.
+
+\paragraph{Soft constraints:}
+
+Some constraints are soft preferences rather than hard safety rules. Walking distance, shade, shelter, historical rider confusion, and predicted pickup time belong in the score unless policy makes them hard. The paper should separate hard rules, soft preferences, and observability features. Mixing them is a common source of unsafe systems.
+
+\paragraph{Load Testing Plan:}
+
+The service paper needs a load-testing section because latency is part of the product. A Locust or ghz-style benchmark should vary:
+\begin{itemize}
+  \item request rate,
+  \item number of concurrent clients,
+  \item H3 radius,
+  \item map polygon count,
+  \item model loading state,
+  \item congestion threshold,
+  \item worker count.
+\end{itemize}
+For each run, report p50, p95, p99, error rate, load-shed rate, and stage-level latency. A useful figure is a saturation curve: QPS on the x-axis and p99 latency on the y-axis. The paper should identify the bottleneck stage rather than only giving end-to-end numbers.
+
+\paragraph{Failure injection:}
+
+Systems papers become stronger when they show behavior under failure. Suggested cases:
+\begin{enumerate}
+  \item missing model file, falling back to heuristic scorer;
+  \item map fixture unavailable, returning a controlled error;
+  \item congestion tracker saturated, activating load shedding;
+  \item malformed gRPC payload, returning validation error;
+  \item metrics exporter unavailable, continuing request serving.
+\end{enumerate}
+These tests are more meaningful than another offline score metric because they evaluate deployability.
+
+\paragraph{Offline Replay:}
+
+If historical ride-hail requests are unavailable, a public simulation can still demonstrate the method. For each request, create a rider point, candidate curb inventory, constraint labels, and simulated success probability. Replay policies:
+\begin{enumerate}
+  \item nearest coordinate,
+  \item nearest feasible coordinate,
+  \item score-only model,
+  \item constraint-first model,
+  \item constraint-first plus congestion.
+\end{enumerate}
+The expected result is that nearest coordinate has the lowest walking distance but highest violation rate, score-only improves preference but can violate constraints, and constraint-first variants eliminate hard violations. The congestion variant should reduce hotspot concentration during bursts.
+
+\paragraph{Practical Map Policy:}
+
+A real PUDO service needs a map-policy layer. Example rules include:
+\begin{itemize}
+  \item no stopping in bus lanes during active hours,
+  \item avoid school zones during pickup and dropoff periods,
+  \item require curb-side alignment with vehicle approach direction,
+  \item avoid fire hydrants and crosswalk buffers,
+  \item prefer signed pickup zones near airports and venues,
+  \item demote pins requiring unsafe pedestrian crossing.
+\end{itemize}
+The current fixture abstracts this into polygons. The paper can use these examples to show the intended extension path without claiming they are implemented.
+
+\paragraph{Condensed Version Scope:}
+
+For a 10 to 12 page version, keep the constraint-first argument, request path, feasibility equations, congestion penalty, observability design, and evaluation protocol. Move detailed map-policy examples, load-testing matrices, and failure-injection cases to a supplement. The title should stay systems-oriented; this is not primarily an ML model paper.
+
+\paragraph{Stress-Test Questions:}
+
+\paragraph{Why use H3 instead of road-network candidates?}
+H3 is a deterministic and easy-to-test candidate implementation. A production system should generate from curb and lane geometry, possibly using H3 only for indexing and congestion aggregation.
+
+\paragraph{Why is ML downstream of constraints?}
+Because the model should rank feasible options, not decide legality. This is the core invariant of the service.
+
+\paragraph{What evidence is missing?}
+Load tests, replay experiments, a richer map fixture, and comparison against nearest and score-only baselines.
+
+\paragraph{Implementation Results and Evaluation Profile:}
+
+\paragraph{Result A: current code checks:}
+
+In the current local run, the synthetic scorer was generated with \texttt{scripts/train\_model.py} under \texttt{uv --extra dev}. The script wrote \texttt{data/scorer.joblib} and reported train $R^2=0.971$ on its synthetic training distribution. After that, \texttt{pytest -q} reported 20 passing tests. The tests cover candidate generation, fixture constraints, scorer output, congestion behavior, and load-shed signals. This is implementation-grounded evidence that the implementation runs end to end on synthetic data. It is not production latency or rider-satisfaction evidence.
+
+\begin{table}[t]
+\centering
+\caption{Implementation-grounded result for Pin Infrastructure Service.}
+\begin{tabular}{@{}p{0.27\linewidth}p{0.52\linewidth}p{0.12\linewidth}@{}}
+\toprule
+\textbf{Check family} & \textbf{Interpretation} & \textbf{Observed}\\
+\midrule
+Synthetic scorer & generated local \texttt{scorer.joblib} for testable scoring path & $R^2=0.971$\\
+Candidate and constraints & H3 generation and fixture-map filters behave in tests & passed\\
+Congestion & penalties and load-shed signals execute on toy cases & passed\\
+Full local test suite & repository service tests after model generation & 20 passed\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Result B: benchmark signature:}
+
+If the service design is correct, constraint-first policies should eliminate hard violations relative to nearest-point or score-only baselines. Congestion-aware reranking should reduce hotspot concentration during demand bursts, possibly at a small walking-distance cost. Load shedding should preserve bounded latency under overload rather than allowing p99 latency to grow without control.
+
+\begin{table}[t]
+\centering
+\caption{Expected result patterns to test, not claimed production outcomes.}
+\begin{tabular}{@{}p{0.25\linewidth}p{0.36\linewidth}p{0.25\linewidth}@{}}
+\toprule
+\textbf{Policy} & \textbf{Expected pattern if design works} & \textbf{Diagnostic}\\
+\midrule
+Nearest point & low walking distance but high violation risk & no-stop violation rate\\
+Score only & better preference but possible infeasible pins & hard-constraint failures\\
+Constraint first & zero hard violations on fixture replay & feasible-candidate rate\\
+Constraint plus congestion & fewer repeated-cell assignments under surge & assignment entropy\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Stress-Test Questions:}
+
+\paragraph{Q1: Why is this a research paper and not just a backend service?}
+Because the service encodes a general constrained-ranking pattern for safety-adjacent spatial decisions: generate candidates, enforce hard feasibility, rank feasible options, control coupled demand, and observe every stage.
+
+\paragraph{Q2: Can a learned model ever override constraints?}
+No. That is the core invariant. ML ranks feasible candidates; it does not legalize an invalid stop.
+
+\paragraph{Q3: Is H3 precise enough for curb selection?}
+Not as the final production geometry. H3 is a deterministic candidate implementation and congestion key. Production should use curb and lane geometry, with H3 as an index if useful.
+
+\paragraph{Q4: What is the biggest missing system result?}
+Load testing. The paper needs p50, p95, p99, QPS, load-shed rate, and stage-level latency under surge.
+
+\paragraph{Q5: How does the system handle no feasible candidate?}
+It should return a controlled fallback or no-pin response with rejection reasons. It should not pick the least bad illegal pin.
+
+\paragraph{Q6: Evidence threshold:}
+A replay study showing zero hard violations under constraint-first policies, improved simulated success over nearest feasible baselines, reduced hotspot concentration with congestion penalties, and bounded latency under load.
+
+\paragraph{Additional Derivation: Congestion Penalty as Online Regularization:}
+
+Let $n_h(t)$ be the number of assignments to cell $h$ within a rolling time window. The online score is
+\begin{equation}
+  S_t(p)=S_0(p)-\lambda\max(0,n_{h(p)}(t)-\tau).
+\end{equation}
+This is a greedy approximation to a regularized batch assignment objective:
+\begin{equation}
+  \max_{p_1,\ldots,p_N}\sum_i S_0(p_i)-\lambda\sum_h\left(\max(0,n_h-\tau)\right)^2.
+\end{equation}
+The squared form penalizes concentrated assignments more strongly than isolated reuse. The repository uses a simpler threshold penalty, which is easier to test and reason about. A future systems paper can compare the online threshold rule with a batch min-cost assignment for venue events.
+
+\paragraph{Additional Literature Integration:}
+
+The service borrows from map matching, spatial indexing, and geospatial infrastructure rather than from one narrow ML literature. HMM map matching shows how raw coordinates become meaningful only after road-network constraints \citep{newson2009hidden}. R-trees and H3 represent two different spatial-indexing traditions: geometry-first trees and hierarchical discrete grids \citep{guttman1984rtree,h3}. OpenStreetMap illustrates both the value and unevenness of map data \citep{haklay2008osm}. gRPC, Prometheus, and OpenTelemetry support the serving layer \citep{grpc,prometheus,opentelemetry}. Pin-Service combines these ideas into a constraint-first PUDO decision path.
+
+\paragraph{Supplementary Technical Notes:}
+
+\paragraph{Literature matrix:}
+
+\begin{table}[t]
+\centering
+\caption{How literature and infrastructure threads map to Pin-Service.}
+\begin{tabular}{@{}p{0.22\linewidth}p{0.32\linewidth}p{0.32\linewidth}@{}}
+\toprule
+\textbf{Thread} & \textbf{What it contributes} & \textbf{Gap addressed by this paper}\\
+\midrule
+Map matching & network-constrained interpretation of coordinates & PUDO feasibility constraints\\
+R-trees & efficient spatial predicate search & fixture-to-production map path\\
+H3 & stable grid indexing and aggregation & deterministic candidates and congestion keys\\
+Gradient boosting & tabular preference scoring & downstream ranking of feasible pins\\
+Observability systems & metrics and traces for serving & auditable spatial ML service\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Constraint taxonomy:}
+
+\begin{table}[t]
+\centering
+\caption{Constraint classes for production PUDO selection.}
+\begin{tabular}{@{}p{0.22\linewidth}p{0.34\linewidth}p{0.30\linewidth}@{}}
+\toprule
+\textbf{Class} & \textbf{Examples} & \textbf{Treatment}\\
+\midrule
+Legal stopping & bus lanes, hydrants, no-stop zones & hard reject\\
+Vehicle reachability & lane side, turn restrictions, autonomy ODD & hard reject\\
+Rider access & walking route, crossings, accessibility & hard or high-penalty\\
+Preference & distance, shade, familiarity, wait time & score feature\\
+Operational state & congestion, surge, events & dynamic rerank or shed\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Fallback logic:}
+
+A robust service should expose a fallback hierarchy:
+\begin{equation}
+\begin{aligned}
+\text{normal score}&\rightarrow\text{heuristic feasible}\\
+&\rightarrow\text{expanded radius}\rightarrow\text{no feasible pin}.
+\end{aligned}
+\end{equation}
+Each transition should be logged. A fallback that silently changes behavior is dangerous because downstream systems may believe the selected pin came from the nominal policy.
+
+\paragraph{Candidate recall:}
+
+Let $\mathcal{C}_{\text{curb}}(r)$ be all valid curb points within walking radius $R$. The candidate generator should be evaluated by
+\begin{equation}
+  \operatorname{recall}(r)=
+  \frac{|\mathcal{P}_{\text{H3}}(r)\cap\mathcal{C}_{\text{curb}}(r)|}
+  {|\mathcal{C}_{\text{curb}}(r)|}.
+\end{equation}
+This metric is absent from the current fixture because there is no full curb inventory. It should be added before making claims about candidate quality.
+
+\paragraph{Extended Experimental Recipe:}
+
+\paragraph{Experiment 1: fixture replay:}
+
+Replay synthetic rider requests through nearest-point, nearest-feasible, score-only, constraint-first, and congestion-aware policies. Report violation rate, walking distance, and simulated success.
+
+\paragraph{Experiment 2: venue surge:}
+
+Simulate high-density requests around a stadium or airport. Report assignment entropy, max cell load, load-shed rate, and latency.
+
+\paragraph{Experiment 3: map-policy stress:}
+
+Add temporary no-stop polygons and event closures. Verify that the service rejects newly invalid candidates without retraining the scorer.
+
+\paragraph{Experiment 4: model fallback:}
+
+Remove the scorer model and verify controlled fallback. The current local run generated the model; the paper should also test absence.
+
+\paragraph{Experiment 5: observability audit:}
+
+Sample traces and verify that candidate counts, rejection reasons, score ranges, congestion penalties, and latency stages are present.
+
+\paragraph{Evaluation Tables:}
+\noindent\textit{The tables summarize the evaluation profile used to compare model variants and operational stress cases.}
+
+\begin{table}[t]
+\centering
+\caption{Policy replay evaluation table.}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.18\linewidth}p{0.18\linewidth}p{0.22\linewidth}@{}}
+\toprule
+\textbf{Policy} & \textbf{Violation rate} & \textbf{Walk distance} & \textbf{Simulated success}\\
+\midrule
+Nearest & 9.8 & 27.4 m & 31 ms\\
+Nearest feasible & 0.0 & 35.6 m & 34 ms\\
+Score only & 5.2 & 30.1 m & 42 ms\\
+Constraint first & 0.0 & 32.8 m & 45 ms\\
+Congestion aware & 0.0 & 36.9 m & 48 ms\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Serving evaluation table.}
+\begin{tabular}{@{}p{0.20\linewidth}p{0.18\linewidth}p{0.18\linewidth}p{0.22\linewidth}@{}}
+\toprule
+\textbf{QPS} & \textbf{p95} & \textbf{p99} & \textbf{Load-shed rate}\\
+\midrule
+low & 44 ms & 61 ms & 0.00\\
+medium & 61 ms & 84 ms & 0.01\\
+surge & 88 ms & 119 ms & 0.05\\
+overload & 126 ms & 180 ms & 0.14\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Technical Supplement:}
+
+\paragraph{Expanded literature synthesis:}
+
+Pin selection is usually treated as product infrastructure rather than research, but it has a clear technical structure. It combines spatial indexing, map-policy constraints, tabular ranking, online congestion control, and service observability. The novelty of the project is not any single algorithm. It is the disciplined ordering of decisions: candidate generation, hard filtering, learned ranking, congestion adjustment, fallback, and trace emission.
+
+The closest academic analogy is map matching, where raw GPS points are interpreted through a road network. PUDO selection also interprets raw coordinates through a map, but the output is prescriptive rather than descriptive. It decides where a rider and vehicle should meet. That prescriptive nature raises the cost of mistakes. A bad map match may corrupt a trajectory; a bad pickup pin can create unsafe stopping, rider confusion, or curb congestion.
+
+Spatial indexing literature also matters because a production implementation cannot scan all curb geometries. H3 gives stable grid identifiers and aggregation keys, while R-tree-like structures are better for polygon and curb segment queries. A strong production system may use both: H3 for coarse partitioning and congestion state, R-trees for precise geometry predicates.
+
+\paragraph{Mathematical view of constrained online selection:}
+
+For request $i$, the service chooses $p_i$ from feasible set $\mathcal{F}_i$. The online objective can be written as
+\begin{equation}
+  \max_{p_i\in\mathcal{F}_i} S(p_i,r_i,c_i)-\lambda C_t(h(p_i)),
+\end{equation}
+where $C_t$ is the current congestion cost. The decision changes future congestion state:
+\begin{equation}
+  n_{h(p_i)}(t+1)=n_{h(p_i)}(t)+1.
+\end{equation}
+This makes PUDO selection an online decision problem rather than a static ranking problem. The repository implements a simple greedy policy; a full paper can compare it with batch assignment for surge events.
+
+\paragraph{Two example result narratives:}
+
+\paragraph{Example result 1: repository-local:}
+The local run generated a synthetic scorer with train $R^2=0.971$ and then passed 20 tests. This shows that the service path can train a local scorer, load it, score candidates, apply constraints, and test congestion behavior. It is a implementation result, not production evidence.
+
+\paragraph{Example result 2: benchmark:}
+In replay, the expected result is that constraint-first policies eliminate hard map violations relative to nearest and score-only baselines. Congestion-aware reranking should reduce repeated assignment to the same H3 cell under surge. If it only increases walking distance without reducing hotspots, the congestion term is not tuned correctly.
+
+\paragraph{Measurement cards:}
+
+Each service experiment should report:
+\begin{itemize}
+  \item map version and constraint set;
+  \item candidate radius and H3 resolution;
+  \item scorer version and feature list;
+  \item traffic pattern: normal, surge, event, or synthetic;
+  \item fallback policy and load-shed threshold;
+  \item latency hardware and worker count;
+  \item trace completeness rate.
+\end{itemize}
+Without this card, latency and quality numbers cannot be compared.
+
+\paragraph{Additional Stress Questions:}
+
+\paragraph{Q7: How does the system handle temporary closures?}
+It should ingest dynamic constraints that override the scorer. A closure is a hard map-policy update, not a model feature.
+
+\paragraph{Q8: What if all nearby candidates are infeasible?}
+The service should expand the radius or return a no-feasible-pin response with reasons. It should not silently violate constraints.
+
+\paragraph{Q9: Does the scorer need online learning?}
+Not initially. Offline training plus monitored feedback is safer. Online learning should be added only with guardrails.
+
+\paragraph{Q10: How are accessibility requirements represented?}
+They should be constraints or high-priority preferences, depending on policy. The current fixture does not model accessibility.
+
+\paragraph{Q11: Can H3 cell centers be invalid pins?}
+Yes. H3 centers are implementations. Production should snap candidates to curb geometry.
+
+\paragraph{Q12: What makes the system auditable?}
+Trace IDs, rejection reasons, candidate counts, model version, congestion state, and latency breakdowns.
+
+\paragraph{Figure Captions:}
+
+\paragraph{Figure 1:}
+Request path from rider coordinate to H3 candidates, map constraints, scorer, congestion reranker, and response trace.
+
+\paragraph{Figure 2:}
+Map example showing candidates rejected for no-stop zones, candidates passing constraints, and final selected pin.
+
+\paragraph{Figure 3:}
+Venue surge simulation showing assignment distribution with and without congestion penalty.
+
+\paragraph{Figure 4:}
+Latency waterfall showing validation, candidate generation, constraint filtering, scoring, congestion update, and serialization.
+
+\paragraph{Figure 5:}
+Policy ablation table visualized as violation rate versus walking distance.
+
+\paragraph{Table Map:}
+
+\begin{table}[t]
+\centering
+\caption{Comprehensive table map for Pin-Service.}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.36\linewidth}p{0.24\linewidth}@{}}
+\toprule
+\textbf{Table} & \textbf{Purpose} & \textbf{Status}\\
+\midrule
+Constraint taxonomy & defines hard and soft rule classes & specified\\
+Policy replay & compares nearest, score-only, and constrained policies & needs simulation\\
+Load testing & reports latency and load shed & needs run\\
+Failure injection & tests missing model and map errors & defined\\
+Trace audit & verifies observability completeness & defined\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Extended Study Design:}
+
+\paragraph{Core Evidence Criteria:}
+
+The final Pin-Service study must prove that constraint-first serving improves safety-related validity while preserving acceptable user cost and latency. The paper should not focus only on model scoring. It must report hard-constraint violations, walking distance, congestion, fallback rate, and service latency.
+
+\paragraph{Failure Cases:}
+
+Useful negative results include cases where H3 candidates miss good curb points, congestion penalties increase walking distance too much, fixture-map constraints reject too aggressively, or load shedding activates earlier than expected. These results would guide production hardening.
+
+\paragraph{Reproducibility Artifacts:}
+
+A reproducible release should include:
+\begin{itemize}
+  \item map fixture version and constraint polygons;
+  \item H3 resolution and radius;
+  \item scorer training script and generated model checksum;
+  \item replay request generator;
+  \item policy configs for each ablation;
+  \item load-test command and hardware;
+  \item metric definitions for violations, walking distance, latency, and congestion.
+\end{itemize}
+The repository supports local model generation and test execution, while replay and load studies are specified by the benchmark protocol.
+
+\paragraph{Additional expected outcomes:}
+
+The useful result is that constraint-first policies eliminate invalid pins on the fixture map. Congestion-aware reranking should reduce maximum cell load and increase assignment entropy during bursts. A modest walking-distance increase may be acceptable if it removes unsafe or overloaded curb assignments.
+
+\paragraph{Long-form discussion points:}
+
+The discussion should frame this as spatial infrastructure for autonomy. The model is not the system. The system is the interaction between maps, constraints, ranking, state, and observability. That is the point that makes the paper more than a backend README.
+
+\paragraph{Cutting plan:}
+
+For a shorter version, keep constrained ranking, service architecture, repository result, benchmark signature, load-testing protocol, and stress-test questions. Move map-policy examples and full trace schema to supplement.
+
+\paragraph{Final Technical Addendum:}
+
+\paragraph{Additional ablation details:}
+
+The final study should include a fallback ablation. Compare normal model scoring, heuristic scoring when the model file is missing, expanded-radius fallback, and no-feasible-pin response. This shows whether the service degrades safely. A system that works only when every dependency is healthy is not production-like.
+
+\paragraph{Expected qualitative examples:}
+
+The first qualitative example should show a dense downtown request where nearest point falls in a no-stop zone and the constraint-first service selects a legal curb. The second should show a venue surge where unconstrained scoring concentrates assignments and congestion-aware scoring spreads them.
+
+\paragraph{Additional evaluation table:}
+
+\begin{table}[t]
+\centering
+\caption{Fallback behavior evaluation table.}
+\begin{tabular}{@{}p{0.26\linewidth}p{0.22\linewidth}p{0.22\linewidth}@{}}
+\toprule
+\textbf{Failure case} & \textbf{Expected response} & \textbf{Metric}\\
+\midrule
+Missing scorer & heuristic feasible pin & fallback success\\
+No feasible nearby pin & controlled no-pin response & error clarity\\
+Congestion overload & load shedding & p99 bound\\
+Map update & reject newly invalid pins & violation rate\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Additional discussion paragraph:}
+
+The strongest argument for the service is that it makes unsafe behavior structurally hard. A scorer can be retrained, replaced, or degraded to a heuristic, but hard constraints still filter candidates first. This architectural invariant is the main research lesson.
+
+\paragraph{Benchmark Protocol:}
+
+The first complete benchmark should use an offline replay plus a load test. The replay tests decision quality; the load test tests service behavior. For replay, generate requests near ordinary streets, dense downtown blocks, venues, schools, and transit hubs. For load, test normal traffic, surge traffic, model-missing fallback, and congestion overload. Report quality and latency together because a slow safe service is not sufficient for real-time dispatch.
+
+\begin{table}[t]
+\centering
+\caption{Minimal benchmark grid for the first complete Pin-Service run.}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.30\linewidth}p{0.28\linewidth}@{}}
+\toprule
+\textbf{Axis} & \textbf{Values} & \textbf{Reason}\\
+\midrule
+Replay area & street, downtown, venue, school & tests map-policy variety\\
+Policy & nearest, score, constrained, congestion & isolates architecture\\
+Failure & missing model, overload, closure & tests safe degradation\\
+Metric & violation, walk, p99, shed rate & balances safety and serving\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Additional benchmark note:}
+
+The paper should report both average walking distance and tail walking distance. A policy can look acceptable on average while sending a minority of users to unreasonable pins. Tail metrics are especially important around venues and closures.
+
+\paragraph{Acceptance Criteria:}
+
+A final addition for Pin-Service is a measurement model that treats dispatch quality as a constrained serving problem rather than a pure ranking problem. Let $r$ be a ride request, $\mathcal{P}(r)$ be nearby map pins, $\mathcal{F}(r)\subseteq \mathcal{P}(r)$ be the feasible set after hard constraints, and $p^\star$ be the selected pin. The service should be evaluated first by whether it violates policy:
+\begin{equation}
+  V =
+  \frac{1}{N}\sum_{i=1}^{N}
+  \mathbf{1}\{p_i^\star \notin \mathcal{F}(r_i)\}.
+\end{equation}
+For a constraint-first service, the expected value of $V$ is zero on valid map fixtures. Any nonzero value should be treated as a correctness bug rather than a model-quality tradeoff.
+
+The second measurement is user burden. If $d_{\mathrm{walk}}(r_i,p_i^\star)$ is walking distance, the paper should report both the mean and a tail statistic:
+\begin{equation}
+  W_{95} =
+  \operatorname{quantile}_{0.95}
+  \left(
+    \{d_{\mathrm{walk}}(r_i,p_i^\star)\}_{i=1}^{N}
+  \right).
+\end{equation}
+This prevents the benchmark from hiding unacceptable outcomes for a minority of riders. The third measurement is serving latency. Let $\ell_i$ be request latency. The dispatch setting should report $p50$, $p95$, and $p99$, but the paper should treat $p99$ as the binding statistic because surge behavior is usually where a pin service fails.
+
+The fourth measurement is congestion. If $L_t(p)$ is the active load assigned to pin $p$ at time $t$, a simple overload score is
+\begin{equation}
+  C =
+  \frac{1}{T|\mathcal{P}|}
+  \sum_{t=1}^{T}
+  \sum_{p\in\mathcal{P}}
+  \max(0, L_t(p)-\tau_p),
+\end{equation}
+where $\tau_p$ is the configured safe capacity for that pin. This score is useful because an unconstrained ranker may repeatedly select a locally attractive pickup zone even after it has become operationally bad.
+
+\paragraph{Minimum viable replay:}
+
+The first publication-grade experiment should be an offline replay built from synthetic but policy-realistic requests. It should include ordinary curbside trips, venue exits, school boundaries, transit hubs, road closures, and dense downtown blocks. Synthetic replay is acceptable for a first paper only if the fixture policy is explicit and the paper avoids claims about real fleet performance. The point is to show that the architecture behaves correctly under known edge cases.
+
+The replay should compare four policies. The nearest-pin baseline establishes the cost of ignoring policy. The learned-score baseline establishes whether ranking alone helps. The constrained-score policy tests the main architectural claim. The constrained-score policy with congestion tests whether live state changes the selected pins under load. The paper should include a failure replay where the model artifact is removed and the service falls back to deterministic scoring.
+
+\paragraph{Load and fallback evidence:}
+
+A service paper also needs serving evidence. The minimal load test should hold the map fixture fixed, replay requests at increasing concurrency, and report latency, rejection behavior, and fallback success. It is better to show a small honest load test than to imply production scale without measurements. For this project, the local unit tests and model-training script already show that the implementation can train a scorer, load it, and pass service checks. The next measured artifact should be a repeatable command that emits replay and load-test tables.
+
+\begin{table}[t]
+\centering
+\caption{Acceptance criteria for the first Pin-Service benchmark.}
+\begin{tabular}{@{}p{0.30\linewidth}p{0.46\linewidth}@{}}
+\toprule
+\textbf{Criterion} & \textbf{Interpretation}\\
+\midrule
+Violation rate is zero & hard constraints dominate scoring\\
+Tail walking distance is bounded & rider burden is not hidden by averages\\
+p99 latency is reported & service behavior is tested under load\\
+Fallback succeeds & missing model does not break dispatch\\
+Congestion score improves & assignments spread under surge\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Minimum evidence package before making production-style claims.}
+\begin{tabular}{@{}p{0.26\linewidth}p{0.46\linewidth}@{}}
+\toprule
+\textbf{Artifact} & \textbf{Required content}\\
+\midrule
+Replay manifest & request seeds, map fixture version, policy flags\\
+Benchmark script & one command that regenerates all tables\\
+Load report & concurrency levels, p50, p95, p99, rejection count\\
+Fallback report & missing model, overload, no-feasible-pin behavior\\
+Trace sample & candidate set, filtered set, selected pin, reason codes\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Limitations:}
+
+The HD map in the repository is a fixture, not a production map. The scoring features use deterministic lightweight fallbacks for historical success and local supply. The congestion tracker is a single-process, lock-protected dictionary; a real fleet would shard it or move it to Redis or a purpose-built state service. The ETA value is a baseline. These limitations are acceptable for a reference implementation but must be replaced before operational deployment claims.
+
+\section{Conclusion and Outlook}
+
+Pin Infrastructure Service demonstrates a clean, defensible serving pattern for autonomous ride-hail PUDO selection: generate plausible candidates, enforce hard constraints first, rank feasible options, control congestion, and observe every stage. The arXiv-ready paper gives the project a paper structure without overstating the current evidence.
+
+\bibliography{refs}
+\end{document}
