@@ -6,7 +6,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Noto+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#fbfcfe;--panel:#fff;--ink:#16202c;--mut:#5b6776;--line:#e6eaf0;--acc:#2257d6;--acc2:#0e9f6e;--warn:#b45309;--chip:#eef2f9;--code:#f3f5f9}
-@media(prefers-color-scheme:dark){:root{--bg:#0e1116;--panel:#161b22;--ink:#e7ecf3;--mut:#9aa6b4;--line:#252c37;--acc:#6ea8fe;--acc2:#54d6a0;--warn:#ffb454;--chip:#1b212b;--code:#11151b}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;font-size:16px}
 h1,h2,h3{font-family:Montserrat,system-ui,sans-serif}
@@ -54,27 +53,21 @@ footer{padding:26px 0 50px;color:var(--mut);font-size:13.5px;text-align:center}
 </div></header>
 <section><div class="wrap"><h2>Abstract</h2><p class="lead">Choosing a stop (pickup/drop-off or delivery) is a systems problem, not a lookup: the stop must be on a drivable lane, legal to stop at, walkable to the door, and globally coordinated so demand spikes do not converge on one curb. Pin-Service is a tested reference implementation of that serving path, candidate generation, constraint filtering, ML scoring, congestion-aware re-ranking, and load shedding, behind a gRPC API.</p>
   <div class="callout warn"><b>Honest scope.</b> This is a clean, <b>tested reference implementation</b> of the canonical serving path (unit tests for each stage + a Locust load test). The <b>engineering pattern is real and runnable</b>; the ML scorer is a gradient-boosted regressor trained on a <b>synthetic</b> satisfaction label and the map / supply signals are fixtures, so the model and data are <b>illustrative</b>.</div></div></section>
-<section><div class="wrap"><h2>Architecture</h2><div class="fig"><svg viewBox="0 0 960 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pin-Service serving pipeline"><style>
-.b{fill:#fff;stroke:#e6eaf0;stroke-width:1.5}
-.t{font-family:Montserrat,system-ui,sans-serif;font-size:13px;fill:#16202c}
-.s{font-family:'Noto Sans',system-ui,sans-serif;font-size:10.5px;fill:#5b6776}
-.real{stroke:#0e9f6e;stroke-width:2}
-.stub{stroke:#b45309;stroke-dasharray:5 4;stroke-width:2}
-.ar{stroke:#5b6776;stroke-width:1.6;fill:none;marker-end:url(#a)}
-.lg{font-family:'Noto Sans',system-ui,sans-serif;font-size:10.5px}
-</style>
-<defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5b6776"/></marker></defs>
-<rect class="b" x="6" y="60" width="120" height="50" rx="10"/><text class="t" x="18" y="90">Request</text>
-<rect class="b real" x="146" y="60" width="140" height="50" rx="10"/><text class="t" x="158" y="83">Candidate gen</text><text class="s" x="158" y="100">map-snapped pins</text>
-<rect class="b real" x="306" y="60" width="140" height="50" rx="10"/><text class="t" x="318" y="83">Constraint filter</text><text class="s" x="318" y="100">legal / drivable</text>
-<rect class="b real" x="466" y="60" width="130" height="50" rx="10"/><text class="t" x="478" y="83">ML scoring</text><text class="s" x="478" y="100">GBDT (synthetic label)</text>
-<rect class="b real" x="616" y="60" width="150" height="50" rx="10"/><text class="t" x="628" y="83">Congestion re-rank</text><text class="s" x="628" y="100">global coordination</text>
-<rect class="b real" x="786" y="60" width="120" height="50" rx="10"/><text class="t" x="798" y="83">Load shed</text><text class="s" x="798" y="100">gRPC response</text>
-<path class="ar" d="M126,85 L144,85"/><path class="ar" d="M286,85 L304,85"/><path class="ar" d="M446,85 L464,85"/><path class="ar" d="M596,85 L614,85"/><path class="ar" d="M766,85 L784,85"/>
-<rect class="b" x="360" y="150" width="240" height="44" rx="10" style="stroke-dasharray:4 3"/><text class="s" x="372" y="177">observability: traces, metrics, Locust load test</text>
-<path class="ar" d="M480,110 L480,148" style="stroke-dasharray:4 3"/>
-<text class="s" x="146" y="230">serving pattern is real and tested (17 files, unit + load tests); the scorer model and map/supply data are illustrative</text>
-<text class="lg" x="14" y="288" fill="#0e9f6e">green = real and tested</text><text class="lg" x="210" y="288" fill="#b45309">dashed amber = stub / target (off-the-shelf or roadmap)</text></svg>
+<section><div class="wrap"><h2>Architecture</h2><div class="fig"><svg viewBox="0 0 1120 408" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PIN-Service architecture"><defs>
+<marker id="ah" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L11,5 L0,10 z" fill="#202733"/></marker>
+</defs>
+<style>
+svg text{font-family:'Noto Sans',system-ui,-apple-system,sans-serif;}
+.box{fill:#fff;stroke:#aebbd0;stroke-width:1.5;}
+.acc{fill:#eaf3fd;stroke:#1772d0;stroke-width:1.5;}
+.grn{fill:#e6f7ed;stroke:#0f766e;stroke-width:1.5;}
+.amb{fill:#fff6e6;stroke:#e7b66a;stroke-width:1.5;stroke-dasharray:6 4;}
+.lane{fill:#f3f6fc;stroke:#aebbd0;stroke-width:1.5;}
+.ttl{font-size:16px;font-weight:700;fill:#0e1117;font-family:'Montserrat','Noto Sans',sans-serif;}
+.sub{font-size:12.5px;font-weight:500;fill:#1b2230;}
+.ar{stroke:#202733;stroke-width:2.2;fill:none;marker-end:url(#ah);}
+.lg{font-size:12px;}
+</style><rect class="box" x="28" y="52" width="233.0" height="92" rx="11"/><text class="ttl" x="144" y="94" text-anchor="middle">Client request</text><text class="sub" x="144" y="112" text-anchor="middle">gRPC (proto)</text><rect class="grn" x="305.0" y="52" width="233.0" height="92" rx="11"/><text class="ttl" x="422" y="94" text-anchor="middle">PIN service</text><text class="sub" x="422" y="112" text-anchor="middle">request handler</text><rect class="grn" x="582.0" y="52" width="233.0" height="92" rx="11"/><text class="ttl" x="698" y="94" text-anchor="middle">Placement pipeline</text><text class="sub" x="698" y="112" text-anchor="middle">geocode + resolve</text><rect class="box" x="859.0" y="52" width="233.0" height="92" rx="11"/><text class="ttl" x="976" y="94" text-anchor="middle">Response</text><text class="sub" x="976" y="112" text-anchor="middle">resolved PIN</text><line class="ar" x1="261.0" y1="98.0" x2="305.0" y2="98.0"/><line class="ar" x1="538.0" y1="98.0" x2="582.0" y2="98.0"/><line class="ar" x1="815.0" y1="98.0" x2="859.0" y2="98.0"/><rect class="grn" x="305.0" y="196" width="510.0" height="76" rx="11"/><text class="ttl" x="560" y="230" text-anchor="middle">Load test (Locust) + observability</text><text class="sub" x="560" y="248" text-anchor="middle">measured p50 / p95 latency</text><line class="ar" x1="560.0" y1="144" x2="560.0" y2="196"/><rect x="28" y="300" width="1064" height="84" rx="12" fill="#fff6e6" stroke="#e7b66a" stroke-width="1.5"/><text x="48" y="328" style="font-size:15px;font-weight:700;fill:#0e1117;font-family:Montserrat,sans-serif">Honest scope</text><text x="48" y="350" class="sub">The service and placement pipeline are real; p50 / p95 latency is measured under a real Locust load test.</text><text class="lg" x="28" y="390" fill="#0f766e">green = real and tested</text><text class="lg" x="228" y="390" fill="#b45309">dashed amber = off-the-shelf / target</text><text class="lg" x="498" y="390" fill="#1772d0">blue = learned / core method</text></svg>
 <div class="figcap">Green = real and tested; dashed amber = stub or target (off-the-shelf or roadmap).</div></div></div></section>
 <section><div class="wrap"><h2>What is real vs scaffold</h2><table><thead><tr><th>Component</th><th>Status</th></tr></thead><tbody><tr><td>Candidate gen, constraint filter, scoring, re-rank, load shed</td><td><span class="ok">Real</span> &middot; Real, tested per stage</td></tr><tr><td>gRPC API + observability</td><td><span class="ok">Real</span> &middot; Real</td></tr><tr><td>Locust load test</td><td><span class="ok">Real</span> &middot; Real, runnable</td></tr><tr><td>ML scorer (GBDT)</td><td><span class="scaf">Scaffold/Target</span> &middot; Trained on a synthetic label, illustrative</td></tr><tr><td>HD-map + supply signals</td><td><span class="scaf">Scaffold/Target</span> &middot; Fixtures / stubs</td></tr></tbody></table></div></section>
 <section><div class="wrap"><h2>Validated output</h2><div class="callout">A tested reference serving implementation (~1,100 LOC; 20 unit tests per stage + a Locust load test). The serving <b>pattern</b> is reproduced and runnable; the scorer model and map/supply data are illustrative. <b>Reproduced 2026-06-29</b> (Locust, 200 users, 60 s, gRPC localhost): served curb-selection latency <b>p50 1 ms / p95 2 ms / p99 6 ms</b>; under a single-curb hotspot flood (~1,495 req/s offered) the congestion fail-safe shed <b>~99.8%</b> of requests at ~0.26 ms fast-reject with <b>0 server errors</b>, holding served tail latency in single-digit ms. See <a href="https://github.com/arunshar/pin-service/blob/main/docs/EVIDENCE.md">docs/EVIDENCE.md</a>.</div>
